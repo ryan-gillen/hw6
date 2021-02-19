@@ -22,9 +22,9 @@ window.addEventListener('DOMContentLoaded', async function(event) {
   let apiKey = '8e590f3ea8624335f5cebe334fb0ef49' // <<<< fill in with your api key from step 1 (or the api key we provided)
   let response = await fetch(`https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US`)
   let json = await response.json()
-  console.log(json) 
+  //console.log(json) 
   let movies = json.results
-  console.log(movies)
+  //console.log(movies)
 
 
 
@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', async function(event) {
 
   let querySnapshot = await db.collection('movie_watchlist').get()
   let movie_watchlist = querySnapshot.docs
-  console.log(movie_watchlist)
+  //console.log(movie_watchlist)
 
 
   for (let i=0; i<movies.length; i++) {  
@@ -57,6 +57,7 @@ window.addEventListener('DOMContentLoaded', async function(event) {
     // let postData = posts[i].data()
     // let postUsername = postData.username
     let movieImageUrl = movies[i].poster_path
+    
     //let watched = 
       
 
@@ -66,19 +67,51 @@ window.addEventListener('DOMContentLoaded', async function(event) {
     //let watchlistTrue = watchlistData.movieId_watched
     //let watchlistTrue = await db.collection('movie_watchlist').doc(${movieId}).get()
     
-    console.log(watchlistTrue)
+    let docRef = await db.collection('movie_watchlist').where('move_watchlist', '==', `${movieId}`).get()
+    // console.log(docRef.movieId_watched)
+    // let item = docRef.docs.movieId_watched
+    // let watchListTest = item[0].data()
 
-    document.querySelector('.movies').insertAdjacentHTML('beforeend', `
-        <div class="w-1/5 p-4 movie-${movieId}">
-          <img src="https://image.tmdb.org/t/p/w500/${movieImageUrl}" class="w-full">
-          <a href="#" class="watched-button block text-center text-white bg-green-500 mt-4 px-4 py-2 rounded">I've watched this!</a>
-        </div>
-      `)
+    let watchListTrue
+
+    // console.log(watchListTest)
+    if(docRef) {
+      watchListTrue = 1
+
+    } else {
+      watchListTrue = 0
+    }
+
+    console.log(watchListTrue)
+
+
+
+    //console.log(docRef.docs.movieId_watched) 
+
+
+    // let watchlistTrue = docRef.movieId_watched
+    // console.log(watchlistTrue)
+
+    
+    
+    //let watchlistTrue = await db.collection('movie_watchlist').doc(`${movieId}`).where('movieId_watched', '==', '1' ).get() 
+
+    //let watchlistTrue = docRef.
+
+
+
 
 
     
-    if (!watchlistTrue) {
-      //do nothing
+    if (watchListTrue == 0) {
+
+      document.querySelector('.movies').insertAdjacentHTML('beforeend', `
+      <div class="w-1/5 p-4 movie-${movieId}">
+        <img src="https://image.tmdb.org/t/p/w500/${movieImageUrl}" class="w-full">
+        <a href="#" class="watched-button block text-center text-white bg-green-500 mt-4 px-4 py-2 rounded">I've watched this!</a>
+      </div>
+    `)
+      
 
     } else {
 
